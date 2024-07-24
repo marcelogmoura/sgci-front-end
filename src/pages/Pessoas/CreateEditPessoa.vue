@@ -11,7 +11,7 @@
         <h4 class="subTitulo">Dados básicos: </h4>
         <div class="row q-col-gutter-lg q-mb-sm">
           <div class="col-6">
-            <q-input :rules="[ val => !(val == null || val == '') || 'Campo obrigatório' ]" v-model="pessoa.nome" label="Nome" dense/>
+            <q-input v-model="pessoa.nome" label="Nome" dense/>
           </div>
           <div class="col-3">
             <q-input v-model="pessoa.documento" label="Documento" dense/>
@@ -39,7 +39,7 @@
         <h4 class="subTitulo">Endereço: </h4>
         <div class="row q-col-gutter-lg q-mb-sm">
           <div class="col-2">
-            <q-input :rules="[ val => !(val == null || val == '') || 'Campo obrigatório' ]" v-model="pessoa.endereco.cep" label="Cep" dense/>
+            <q-input v-model="pessoa.endereco.cep" label="Cep" dense/>
           </div>
           <div class="col-3">
             <q-input v-model="pessoa.endereco.estado" label="Estado" dense/>
@@ -129,6 +129,7 @@ export default {
   },
   methods: {
     cadastrar () {
+      console.log(this.pessoa)
       console.log('cadastrar')
     }
   }
