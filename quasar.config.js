@@ -7,8 +7,9 @@
 
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
-
+const ESLintPlugin = require('eslint-webpack-plugin')
 const { configure } = require('quasar/wrappers')
+require('dotenv').config()
 
 module.exports = configure(function (/* ctx */) {
   return {
@@ -58,7 +59,12 @@ module.exports = configure(function (/* ctx */) {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
+      chainWebpack (chain) {
+        chain.plugin('eslint-webpack-plugin').use(ESLintPlugin, [{ extensions: ['js', 'vue'] }])
+      },
+      env: {
+        API_SGCI: process.env.API_SGCI
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
