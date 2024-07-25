@@ -3,41 +3,47 @@
       <q-form ref="formPessoa" @submit="cadastrar" class="bg">
       <div class="bg"></div>
       <div class="main-container">
-        <div class="q-mb-md">
-        <h4 class="title">Cadastrar Pessoa</h4>
-        <div class="divisor-inline"></div>
+         <div class="q-mb-md">
+         <h4 class="title">Cadastrar Pessoa</h4>
+         <div class="divisor-inline"></div>
       </div>
       <div class="q-pa-md" style="margin-top: -30px;">
         <h4 class="subTitulo">Dados básicos: </h4>
-        <div class="row q-col-gutter-lg q-mb-sm">
-          <div class="col-6">
+        <div class="row q-col-gutter-lg">
+          <div class="col-7">
             <q-input v-model="pessoa.nome" label="Nome" dense/>
           </div>
-          <div class="col-3">
+          <div class="col-2">
             <q-input v-model="pessoa.documento" label="Documento" dense/>
           </div>
           <div class="col-3">
             <q-input v-model="pessoa.profissao" label="Profissão" dense/>
           </div>
-
-            <div class="col-md-6">
-              <q-field dense label="Tipo de Pessoa" lazy-rules borderless stack-label>
-                  <q-option-group v-model="pessoa.tipo" :options="optionsTipoPessoa" color="primary" inline/>
-              </q-field>
-            </div>
         </div>
-        <div class="col-md-6">     <!-- testar dentro da div acima-->
-              <q-field dense label="Estado Civil" lazy-rules borderless stack-label>
-                  <q-option-group v-model="pessoa.optionsEstadoCivil" :options="optionsEstadoCivil" color="primary" inline/>
+        <div class="row q-col-gutter-lg" style="margin-top: -15px">
+            <div class="col-7">
+              <q-field ref="tipoPessoa" dense :model-value="pessoa.tipo" :rules="[vRequired]"
+              label="Tipo de Pessoa" lazy-rules borderless stack-label>
+                <template v-slot:control>
+                  <q-option-group v-model="pessoa.tipo" :options="optionsTipoPessoa" type="radio" size="xs" inline />
+                </template>
               </q-field>
             </div>
-
-        <!-- campos-->
+            <div class="col-5">
+              <q-field dense ref="estadoCivil" :rules="[vRequired]" :model-value="pessoa.estadoCivil"
+                label="Estado Civil" lazy-rules borderless stack-label>
+                <template v-slot:control>
+                  <q-option-group v-model="pessoa.estadoCivil" :options="optionsEstadoCivil" type="radio" size="xs"
+                     inline />
+                </template>
+              </q-field>
+            </div>
+          </div>
       </div>
 
       <div class="q-pa-md" style="margin-top: -30px;">
         <h4 class="subTitulo">Endereço: </h4>
-        <div class="row q-col-gutter-lg q-mb-sm">
+        <div class="row q-col-gutter-lg">
           <div class="col-2">
             <q-input v-model="pessoa.endereco.cep" label="Cep" dense/>
           </div>
@@ -57,39 +63,36 @@
             <q-input v-model="pessoa.endereco.numero" label="Número" dense/>
           </div>
         </div>
-        <!-- campos-->
       </div>
 
       <div class="row">
         <div class="col-12">
          <div style="float: right">
                 <!-- botoes-->
-         <q-btn style="margin-right: 10px;" label="Voltar" no-caps class="btn-voltar"/>
+         <q-btn @click="voltar" style="margin-right: 10px;" label="Voltar" no-caps class="btn-voltar" />
          <q-btn type="submit" label="Cadastrar" no-caps class="btn-cadastrar"/></div>
         </div>
-
       </div>
       </div>
-
       </q-form>
-
   </div>
-
 </template>
 
 <script>
 
 import { ref } from 'vue'
+import { pessoaService } from 'src/services/sgci-api-service.js'
 
 export default {
   name: 'CreateEditPessoa',
   setup () {
     const pessoa = ref({
+      id: null,
       nome: null,
       documento: null,
       profissao: null,
-      tipo: null,
-      estadoCivil: null,
+      tipo: ref(null),
+      estadoCivil: ref(null),
       endereco: ref({
         cep: null,
         estado: null,
@@ -129,8 +132,9 @@ export default {
   },
   methods: {
     cadastrar () {
-      console.log(this.pessoa)
-      console.log('cadastrar')
+      pessoaService.create(this.pessoa).then(response => {
+        console.log('cadastrou pessoa com sucesso')
+      })
     }
   }
 }

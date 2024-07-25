@@ -10,5 +10,4 @@ export class PessoaService {
     return apiSgci.post(this.path, pessoa)
   }
 }
-
 export const pessoaService = new PessoaService()

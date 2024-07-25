@@ -58,20 +58,20 @@ const linksList = [
     title: 'Gerenciar Pessoas',
     caption: 'Físicas e Jurídicas',
     icon: 'group',
-    link: 'https://quasar.dev'
+    link: '/pessoas/form'
   },
   {
     title: 'Gerenciar Imóveis',
     caption: 'Rurais e Urbanos',
     icon: 'other_houses',
-    link: 'https://quasar.dev',
+    link: '/imoveis',
     disable: true
   },
   {
     title: 'Gerenciar Acessos',
     caption: 'Usuários e Perfis',
     icon: 'manage_accounts',
-    link: 'https://quasar.dev',
+    link: '/accounts',
     disable: true
   },
   {
