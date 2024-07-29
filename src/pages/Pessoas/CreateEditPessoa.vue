@@ -1,28 +1,39 @@
 <template>
   <div>
-      <q-form ref="formPessoa" @submit="cadastrar" class="bg">
+      <q-form ref="formPessoa" @submit="cadastrarOuAtualizar" class="bg">
       <div class="bg"></div>
       <div class="main-container">
          <div class="q-mb-md">
-         <h4 class="title">Cadastrar Pessoa</h4>
+         <h4 class="title">{{ pessoa.id ? 'Editar' : 'Cadastrar' }} Pessoa </h4>
          <div class="divisor-inline"></div>
       </div>
       <div class="q-pa-md" style="margin-top: -30px;">
         <h4 class="subTitulo">Dados básicos: </h4>
         <div class="row q-col-gutter-lg">
           <div class="col-7">
-            <q-input v-model="pessoa.nome" label="Nome" dense/>
+            <q-input
+            :rules="[vRequired]"
+            v-model="pessoa.nome"
+            label="Nome" dense/>
           </div>
           <div class="col-2">
-            <q-input v-model="pessoa.documento" label="Documento" dense/>
+            <q-input
+            :rules="[vRequired]"
+            v-model="pessoa.documento"
+            label="Documento" dense/>
           </div>
           <div class="col-3">
-            <q-input v-model="pessoa.profissao" label="Profissão" dense/>
+            <q-input
+            :rules="[vRequired]"
+            v-model="pessoa.profissao"
+            label="Profissão" dense/>
           </div>
         </div>
         <div class="row q-col-gutter-lg" style="margin-top: -15px">
             <div class="col-7">
-              <q-field ref="tipoPessoa" dense :model-value="pessoa.tipo" :rules="[vRequired]"
+              <q-field dense :model-value="pessoa.tipo"
+              :rules="[vRequired]"
+              ref="tipoPessoa"
               label="Tipo de Pessoa" lazy-rules borderless stack-label>
                 <template v-slot:control>
                   <q-option-group v-model="pessoa.tipo" :options="optionsTipoPessoa" type="radio" size="xs" inline />
@@ -30,7 +41,10 @@
               </q-field>
             </div>
             <div class="col-5">
-              <q-field dense ref="estadoCivil" :rules="[vRequired]" :model-value="pessoa.estadoCivil"
+              <q-field
+              dense ref="estadoCivil"
+              :rules="[vRequired]"
+              :model-value="pessoa.estadoCivil"
                 label="Estado Civil" lazy-rules borderless stack-label>
                 <template v-slot:control>
                   <q-option-group v-model="pessoa.estadoCivil" :options="optionsEstadoCivil" type="radio" size="xs"
@@ -45,22 +59,40 @@
         <h4 class="subTitulo">Endereço: </h4>
         <div class="row q-col-gutter-lg">
           <div class="col-2">
-            <q-input v-model="pessoa.endereco.cep" label="Cep" dense/>
+            <q-input
+            :rules="[vRequired]"
+            v-model="pessoa.endereco.cep"
+            label="Cep" dense/>
           </div>
           <div class="col-3">
-            <q-input v-model="pessoa.endereco.estado" label="Estado" dense/>
+            <q-input
+            :rules="[vRequired]"
+            v-model="pessoa.endereco.estado"
+            label="Estado" dense/>
           </div>
           <div class="col-4">
-            <q-input v-model="pessoa.endereco.cidade" label="Cidade" dense/>
+            <q-input
+            :rules="[vRequired]"
+            v-model="pessoa.endereco.cidade"
+            label="Cidade" dense/>
           </div>
           <div class="col-3">
-            <q-input v-model="pessoa.endereco.bairro" label="Bairro" dense/>
+            <q-input
+            :rules="[vRequired]"
+            v-model="pessoa.endereco.bairro"
+            label="Bairro" dense/>
           </div>
           <div class="col-9">
-            <q-input v-model="pessoa.endereco.rua" label="Rua" dense/>
+            <q-input
+            :rules="[vRequired]"
+            v-model="pessoa.endereco.rua"
+            label="Rua" dense/>
           </div>
           <div class="col-3">
-            <q-input v-model="pessoa.endereco.numero" label="Número" dense/>
+            <q-input
+            :rules="[vRequired]"
+            v-model="pessoa.endereco.numero"
+            label="Número" dense/>
           </div>
         </div>
       </div>
@@ -70,7 +102,7 @@
          <div style="float: right">
                 <!-- botoes-->
          <q-btn @click="voltar" style="margin-right: 10px;" label="Voltar" no-caps class="btn-voltar" />
-         <q-btn type="submit" label="Cadastrar" no-caps class="btn-cadastrar"/></div>
+         <q-btn type="submit" :label="pessoa.id ? 'Salvar' : 'Cadastrar'" no-caps class="btn-cadastrar"/></div>
         </div>
       </div>
       </div>
@@ -130,8 +162,35 @@ export default {
       ]
     }
   },
+  watch: {
+    'pessoa.tipo': {
+      handler () {
+        this.$refs.tipoPessoa.resetValidation()
+      }
+    },
+    'pessoa.estadoCivil': {
+      handler () {
+        this.$refs.estadoCivil.resetValidation()
+      }
+    }
+  },
+  mounted () {
+    this.buscarPessoaEdicao()
+  },
   methods: {
-    cadastrar () {
+    buscarPessoaEdicao () {
+      if (!this.$route.params.id) return
+      pessoaService.getById(this.$route.params.id).then(retorno => {
+        this.pessoa = retorno.data
+      })
+    },
+    cadastrarOuAtualizar () {
+      if (this.pessoa.id) {
+        pessoaService.update(this.pessoa.id, this.pessoa).then(response => {
+          console.log('Editou a pessoa com sucesso')
+        })
+        return
+      }
       pessoaService.create(this.pessoa).then(response => {
         console.log('cadastrou pessoa com sucesso')
       })
