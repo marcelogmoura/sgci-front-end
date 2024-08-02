@@ -58,7 +58,7 @@ const linksList = [
     title: 'Gerenciar Pessoas',
     caption: 'Físicas e Jurídicas',
     icon: 'group',
-    link: '/pessoas/form'
+    link: '/pessoas'
   },
   {
     title: 'Gerenciar Imóveis',

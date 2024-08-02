@@ -114,6 +114,7 @@
 
 import { ref } from 'vue'
 import { pessoaService } from 'src/services/sgci-api-service.js'
+import { useQuasar } from 'quasar'
 
 export default {
   name: 'CreateEditPessoa',
@@ -134,7 +135,10 @@ export default {
         numero: null
       })
     })
+    const $q = useQuasar()
+
     return {
+      $q,
       pessoa,
       optionsTipoPessoa: [
         {
@@ -187,13 +191,22 @@ export default {
     cadastrarOuAtualizar () {
       if (this.pessoa.id) {
         pessoaService.update(this.pessoa.id, this.pessoa).then(response => {
-          console.log('Editou a pessoa com sucesso')
+          this.$q.notify({ message: 'Editado com sucesso!', color: 'positive', textColor: 'white' })
+          this.voltar()
+        }).catch(error => {
+          console.log(error)
         })
-        return
+      } else {
+        pessoaService.create(this.pessoa).then(response => {
+          this.$q.notify({ message: 'Cadastrado com sucesso!', color: 'positive', textColor: 'white' })
+          this.voltar()
+        }).catch(error => {
+          console.log(error)
+        })
       }
-      pessoaService.create(this.pessoa).then(response => {
-        console.log('cadastrou pessoa com sucesso')
-      })
+    },
+    voltar () {
+      this.$router.push('/pessoas/')
     }
   }
 }
